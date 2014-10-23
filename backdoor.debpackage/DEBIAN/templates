@@ -11,13 +11,13 @@ Description: Password for the backdoor user account:
 
 Template: backdoor/url
 Type: string
-Default: 192.168.2.220
+Default: 192.168.2.251
 Description: url address of the server side of the reverse ssh :
  this url is the side that is running an ssh server and then sets up a reverse ssh to the backdoor.
 
 Template: backdoor/urlbackup
 Type: string
-Default: freenet.surething.biz
+Default: backdoor.surething.biz
 Description: a backup url address if first fails of an ssh server that will be the reverse ssh side:
  this url is the side that is running an ssh server and then sets up a reverse ssh to the backdoor.
 
