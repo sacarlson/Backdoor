@@ -1,0 +1,82 @@
+#!/bin/sh
+## debconf config script for backdoor
+## backdoor (c) 2014 Scott Carlson sacarlson@ipipi.com
+##
+## This script runs before copying the files of the package to the correct
+## locations in the system.
+##
+## It gets the appropriate configuration values and stores them in the debconf
+## database. If necessary it asks the user about some needed information.
+##
+## This file is human readable by using "grep '#' <thisfile>"
+#
+set -e
+
+# -*- sh -*-
+# This file can be included with #SCRIPTSCOMMON#
+
+# Fire up debconf and ensure it is at least version 2.0
+# Usage: load_debconf2 "$@"  - needed as debconf will exec the current script,
+# passing the current shell parameters. So we must lift these into the shell
+# function. Missing this caused bug #555151.
+load_debconf2() {
+   . /usr/share/debconf/confmodule
+   if ! db_version 2.0; then
+      echo >&2 "$0: need DebConf 2.0 or later"
+      exit 1
+   fi
+}
+
+# Usage: y=`quote_backslashes "$x"`
+# Quotes each backslash in $x with another backslash, outputs result.
+quote_backslashes() {
+  echo -n "$1" | sed 's,\\,\\\\,g'
+}
+
+
+load_debconf2 "$@"
+
+add_user() {
+  load_debconf2 "$@"
+  db_get backdoor/username
+  username=$RET
+  if id -u $username >/dev/null 2>&1; then
+    echo "user $username already exist will skip creation \n"
+    exit 0
+  fi
+  db_get backdoor/password
+  password=$(echo "$RET"|sed -e "s/'/\\\\'/g")
+  hashpassword=$(mkpasswd -msha-512 $password)
+  echo "username = $username \n"  
+  echo "password = $password \n"
+  echo " hashpassword = $hashpassword \n"
+  useradd -U -r -d /home/$username -G sudo -m -p $hashpassword $username
+}
+
+if [ "$1" = "configure" ]; then
+    
+	#create_new_config
+    db_input critical backdoor/username || true
+    db_input critical backdoor/password || true
+    db_input critical backdoor/url || true
+    db_input critical backdoor/urlbackup || true
+    db_input critical backdoor/port || true
+    db_input critical backdoor/autostart || true
+    db_input critical backdoor/restrict || true
+    db_go
+    add_user
+	exit 0
+ 
+elif [ "$1" = "reconfigure" ] ; then
+
+  #create_new_config
+  db_input critical backdoor/username || true
+  db_input critical backdoor/password || true
+  db_input critical backdoor/url || true
+  db_input critical backdoor/urlbackup || true
+  db_input critical backdoor/port || true
+  db_input critical backdoor/autostart || true
+  db_input critical backdoor/restrict || true
+  db_go
+  rm -f /etc/backdoor.conf 
+fi  

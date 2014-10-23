@@ -1,0 +1,20 @@
+#! /bin/bash
+# backdoor key gen (c) Scott Carlson sacarlson@ipipi.com
+# you must have backdoor installed on both sides with rssh mode disabled on both sides.
+# also you need login to the backdoor account before you run this (sudo with root won't work)
+# example sudo su backdoor <cr> backdoor_genkeys
+# run this on the backdoor computer system side that can connect direct with a forward ssh conection
+# after complete you will have to manualy restart the backdoor ssh on both sides to get the new keys to be used
+source /etc/backdoor.conf
+echo "local and remote user name = $username that keys will be applied\n"
+echo "remote URL = $url"
+mkdir /home/$username/sshkeyc
+ssh-keygen -t rsa -f /home/$username/sshkeyc/id_rsa
+ssh $username@$url "mkdir /home/\"$username\"/sshkeyc"
+ssh $username@$url "ssh-keygen -t rsa -f /home/\"$username\"/sshkeyc/id_rsa"
+scp /home/$username/sshkeyc/id_rsa.pub $username@$url:/home/$username/sshkeyc/authorized_keys
+scp $username@$url:/home/$username/sshkeyc/id_rsa.pub /home/$username/sshkeyc/authorized_keys
+mv /home/$username/.ssh /home/$username/sshkeya
+mv /home/$username/sshkeyc /home/$username/.ssh
+ssh $username@$url "mv /home/\"$username\"/.ssh /home/\"$username\"/sshkeya"
+ssh $username@$url "mv /home/\"$username\"/sshkeyc /home/\"$username\"/.ssh"

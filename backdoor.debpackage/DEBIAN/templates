@@ -1,0 +1,40 @@
+Template: backdoor/username
+Type: string
+Default: backdoor
+Description: Username for backdoor account:
+ Please enter the username to use with the backdoor account to login with ssh or desktop for this user.
+
+Template: backdoor/password
+Type: password
+Description: Password for the backdoor user account:
+ Please enter the password to use with the backdoor account.
+
+Template: backdoor/url
+Type: string
+Default: 192.168.2.220
+Description: url address of the server side of the reverse ssh :
+ this url is the side that is running an ssh server and then sets up a reverse ssh to the backdoor.
+
+Template: backdoor/urlbackup
+Type: string
+Default: freenet.surething.biz
+Description: a backup url address if first fails of an ssh server that will be the reverse ssh side:
+ this url is the side that is running an ssh server and then sets up a reverse ssh to the backdoor.
+
+Template: backdoor/port
+Type: string
+Default: 7000
+Description: this is the port number used in reverse ssh:
+ example if this is 7004 then the reverse server side would run something like ssh username@localhost -p 7004 .
+
+Template: backdoor/autostart
+Type: boolean
+Default: true
+Description: set auto start at boot:
+ check this box if you want to auto start backdoor at the boot up of your system.
+
+Template: backdoor/restrict
+Type: boolean
+Default: true
+Description: make users account created here restricted with rssh:
+ check this box to restrict ssh into this box able to do nothing but connect, this is usefull on the server side for security.

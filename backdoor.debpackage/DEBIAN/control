@@ -1,0 +1,8 @@
+Package: backdoor
+Version: 1.0-2
+Architecture: all
+Maintainer: Scott Carlson <sacarlson@ipipi.com>
+Section: base
+Priority: optional
+Depends: adduser, ssh, whois, rssh 
+Description: setup auto remote ssh access at boot from a remote site over reverse ssh

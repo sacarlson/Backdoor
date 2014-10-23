@@ -1,0 +1,23 @@
+#! /bin/bash
+# backdoor_restrict (c) Scott Carlson sacarlson@ipipi.com
+# enable or disable rssh restricted shell on the present backdoor account
+# example to restrict the backdoor account:
+# backdoor_restrict enable
+# default is to disable rssh shell so just run backdoor_restricted with or without parameter to disable
+# be careful enableing rssh if the backdoor account is also the only sudo account on the system
+# you will lock yourself out as sudo.  it can be fixed but it can be a bummer if you do.
+# normaly you set rssh active or not at install time but if later you want to change it without reinstall
+# we have this.
+source /etc/backdoor.conf
+echo " username to have restriction rssh changed $username \n"
+echo " param entered is $1 \n"
+if [ "$1" = "enable" ]; then
+  echo " rssh restricted account active for user $username \n"
+  usermod -s /usr/bin/rssh $username
+  chsh -s /usr/bin/rssh $username
+else
+  echo " rssh restricted shell disabled for user $username \n"
+  usermod -s /bin/bash $username
+  chsh -s /bin/bash $username
+fi
+echo "backdoor_restricted completed ok \n"

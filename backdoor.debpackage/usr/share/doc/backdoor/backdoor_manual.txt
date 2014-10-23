@@ -1,0 +1,56 @@
+﻿Backdoor-1.0-2 manual
+by Scott Carlson   <sacarlson@ipipi.com>
+What is Backdoor
+backdoor is a quick and easy  method to install and setup remote ssh access to a Linux system that is behind a NATed firewall by using a reverse ssh method to accomplish.   The install will provide the option to autostart the remote system to attempt to connect to an accessible ssh server that you can select at install time that will be used as the control point for the backdoor system that will be the remote system to be controlled.   You can also install backdoor on the ssh server side to provide the needed ssh keys that will match whats needed to connect to remote side ssh without a password.   It may sound like this could be a security problem since we distribute mostly the same key sets to everyone but in reality when the remote side logs into the server side with rssh selected then even with they keys for the accounts created it has no options or commands allowed with the restricted shell rssh provided in those accounts.  The control side will have to login to another account other than the one used to make the initial connection to the remote side and have knowledge of passwords or the proper ssh keys to login to that account.  If you want to control in both directions on the account created by backdoor than it's best you create a new set of ssh keys for that account after it is installed and disable the rssh mode at install time to provide a normal bash shell at login.
+
+  Example session and setup:
+
+Computer A   IP address 192.168.2.1 with dns lookup name of nobody.com.  This computer will be used  as control computer for the human operator
+
+Computer B   IP address 192.168.3.1 to be the computer to be remote controlled and is behind a one way NATed firewall that no direct attempt with ssh in can access.
+
+Computer A installs backdoor with default settings but disables the autostart check button and also check the rssh restricted shell button.
+
+Computer B installs backdoor with default settings but changes the primary URL to the addresses of Computer A's  dns lookup name in this case nobody.com and optionally change the urlbackup to computer A's IP address of 192.168.2.1  and also check the rssh restricted button for restricted rssh shell access to the created account for added security. 
+
+After the installs above in a few minutes if all went as planed computer B should have made a reverse ssh connection to computer A . and this will be attempted  by computer B every time computer B boots.
+
+Now if computer A wants to ssh into computer B from any account on computer A to any account on computer B that exist on computer B,  he should be able to do something like  this from computer A:
+ssh  anyaccountonB@localhost -p 7000
+
+This will attempt to connect to the account anyacountonB on computer B over the reverse ssh connection just the same as if you are connecting with direct ssh to it if it could be done.  The same authorization must be provided to login to the accounts on computer B  as if you were using the direct forward ssh method.  Also note in the command above we use localhost to connect to our own computer  and the -p 7000  is the port that in this case we connected to ourself with that will be redirected to the remote computer B.  Also this  port address can be changed at install time, port  7000 is just the default value.  
+
+In a slightly modified example above if you also wanted computer B to be able to ssh into computer  A from the account created by backdoor than you would have to uncheck the rssh button at install time on both  the computer A and B installs.  Now you could login to the created account locally on computer B to be able to ssh into computer A with the same account name with the provided ssh keys that were installed by backdoor .  Be careful if you do this you should create a new set of ssh keys as soon as possible  or you will be providing hackers with a security hole to attempt to break into using published key sets.  Also be careful if you change the created account to an account that exists and that's the only sudo account on the system then be sure you don't click the rssh button or you will have a hard time getting sudo control back on this system from that mostly locked account.  Also note it might be best to make a new set a ssh keys in any case at some point as I may have missed some security item at some point in this project.   Just Google “SSH login without password“ and you will see the details of how to use ssh-keygen to be used on the accounts created by backdoor. 
+
+  The values that are asked for and can be changed in backdoor at install time include:
+1.  The user account name that will be created if it doesn't exist already
+2.  password for the created user account above.  This does nothing if the account already exists
+2.  the primary URL address or IP address of an ssh server that will be used as the control point
+3. the backup urlbackup another URL or ip address that will be attempted if the primary above fails to connect.
+4.  port number that ssh traffic will be redirected on the ssh server side
+
+
+
+
+What's backdoor good for?
+ Backdoor has 101+ different ways of being useful.  Here are just a few off the top of my head.  backdoor can be used to provide a method to try to locate a stolen computer.  If the crook ever connects your stolen system to the Internet you could do all kinds of cool stuff over the auto connected  remote ssh link like take his picture, record voices.  Monitor IP address to get a geolocation and many more things.  Also it could be used in other good and bad ways like spy on your girl friend wife or your kids or just keep an eye on your apartment or hotel room, monitor  key strokes to break into email and other accounts.  Turn the web cam on and keep an eye on things.  Listen to the sound in the room.  Download a file you forgot on the computer you left running someplace and much much more.   I can't stop bad people from doing bad things with what I create so I hope more good than bad comes of the backdoor system.  Remember backdoor runs in the background so most people unless they are computer savvy would never have a clue that it was running.  If you wanted to hide it better maybe change the name to something not so obvious.
+
+backdoor_genkeys  tool:
+Later I added a script to setup a new set of ssh keys on both sides for backdoor called backdoor_genkeys.
+# you must have backdoor installed on both sides with rssh mode disabled on both sides.
+# also you need to login to the backdoor account before you run this (sudo with root won't work)
+# example sudo su backdoor <cr> backdoor_genkeys
+# run this on the backdoor computer system side that can connect direct with a forward ssh conection
+# after complete you will have to manually restart the backdoor ssh on both sides to get the new keys to be used.
+
+backdoor_restrict tool:
+# enable or disable rssh restricted shell on the present backdoor account
+# example to restrict the backdoor account:
+# sudo backdoor_restrict enable
+# default is to disable rssh shell so just run backdoor_restricted with or without parameter to disable
+# be careful enableing rssh if the backdoor account is also the only sudo account on the system
+# you will lock yourself out as sudo.  it can be fixed but it can be a bummer if you do.
+# normaly you set rssh active or not at install time but if later you want to change it without reinstall
+# we have this script to make it easy.
+
+   

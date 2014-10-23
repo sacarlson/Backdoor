@@ -1,0 +1,22 @@
+#! /bin/bash
+# backdoor (c) Scott Carlson sacarlson@ipipi.com
+ source /etc/backdoor.conf
+ echo " to start a reverse ssh session run this on the remote ssh server that this connects to:"
+ echo " ssh $username@localhost -p $port \n"
+ echo " backdoor is now configured to try to connect to these, url primary = $url  url backup = $urlbackup \n"
+ echo " the remote ssh server must also have this username $username active with proper authorized_keys values in .ssh dir"
+ if [ "$(pidof ssh)" ] 
+ then 
+   echo "ssh is already running nothing done" 
+ else 
+   echo "ssh was NOT running will start reverse ssh now \n"    
+   sudo -u $username ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -fN -R $port:localhost:22 $username@$url
+   sleep 4
+   if [ "$(pidof ssh)" ]
+   then
+     echo "ssh started ok"
+   else
+     echo "ssh failed to start will try backup network address $urlbackup \n"
+     sudo  -u $username ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -fN -R $port:localhost:22 $username@$urlbackup
+   fi
+ fi  
