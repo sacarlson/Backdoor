@@ -58,6 +58,10 @@ sudo gdebi ./backdoor-X.X-X.deb
 This will install all the dependencies needed and ask you the needed questions to complete the install of backdoor.
 There are default values filled in as examples of what is expected.  Optionally I found it also installs with a simple double click of the deb file in most file managers like Caja or Nautilus.  Note the name of the deb file the "X" will change with different updates of backdoor example first release name backdoor-1.0-1.deb .  I will also provide links to the deb file at my Google drive account at some point.
 
+## Option 2 install just double click backdoor-X.X-X.deb file in file manager for gui install
+
+[[https://github.com/sacarlson/Backdoor/wiki/images/backdoor_screenshot.png]]
+
 ## The values of params that are asked for and can be changed in backdoor at install time include:
 *  The user account name that will be created if it doesn't exist already
 *  password for the created user account above.  This does nothing if the account already exists
@@ -109,3 +113,7 @@ Later I added this script to setup a new set of ssh keys on both sides for Backd
 
  
  I would also welcome others input to add documentation for install and usage.  Any other feedback is always welcome, good or bad.
+
+For more details, updates and examples see:
+* [Backdoor wiki](https://github.com/sacarlson/Backdoor/wiki)
+
